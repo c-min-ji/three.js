@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR contents basic</title>
+    <style>
+        body {margin:0; overflow: hidden;}
+    </style>
+    <script src="three.js-dev/build/three.min.js"></script>
+    <script src="three.js-dev/examples/js/libs/dat.gui.min.js"></script>
+    <script src="three.js-dev/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <canvas id="three"></canvas>
+
+    <script>
+        //set canvas
+        let threeCanvas = document.querySelector('#three');
+        let renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias:true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0xC1E4FA);
+        renderer.setAnimationLoop(animate);
+
+        let scene = new THREE.Scene();
+
+        //camera
+        let camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.01, 100);
+            //perspective Camera의 변수: 사이각(FOV), 가로/세로비, near, far
+        camera.position.z = 5;
+            //[object].position.[axis] => 위치
+        scene.add(camera);
+            //scene에 카메라 추가
+
+        //position, box
+        let geometry = new THREE.BoxGeometry(1,1,1);
+        let material = new THREE.MeshLambertMaterial( { color: 0x049EF4 } );
+        let box = new THREE.Mesh(geometry, material);
+        //box.position.x = 2;
+        
+        scene.add(box);
+        //box.position.set(2,1,1);
+        
+        //light
+        let light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.x = 3;
+        scene.add(light);
+        
+        
+        //dat.GUI 사용하기
+        let gui = new dat.GUI();
+        //조명이나 카메라 위치 잡을 때
+        gui.add(light.position, 'x', -5,5,0.1);
+        gui.add(box.position, 'y', -5,5,0.1);
+        gui.add(box.position, 'z', -5,5,0.1);
+
+        //마우스로 카메라 위치 변경
+        let controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        //(1,1)고정된 상태로 카메라 위치 변경
+        controls.target.x = 1;
+        controls.target.y = 1;
+
+        function animate(time){
+            renderer.render(scene, camera);
+            
+            controls.update();
+
+            //box.rotation.x += 0.02;
+            //box.rotation.y += 0.02;
+            //box.rotation.y = Math.PI/6;
+                //[object].rotation.[axis] = value
+            //console.log(box.rotation.y);
+        }
+    </script>
+    
+</body>
+</html>
